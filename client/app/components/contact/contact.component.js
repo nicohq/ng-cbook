@@ -2,14 +2,50 @@
     angular
         .module('cbook.contact', [])
         .component('contact', {
-            templateUrl: 'contact.html',
+            templateUrl: 'app/components/contact/contact.html',
             bindings: {
-                value: '<'
+                source: '<'
+            },
+            require: {
+                parent: '^^contacts'
             },
             controller: ContactCtrl
         });
 
-    ContactCtrl.$inject = [];
+    ContactCtrl.$inject = ['APIService'];
 
-    function ContactCtrl() {}
+    function ContactCtrl(APIService) {
+        var $ctrl = this;
+
+        $ctrl.editing = false;
+
+        $ctrl.deleteContact = function(id) {
+            APIService.deleteContact(id)
+                .then(function(response) {
+                    $ctrl.parent.removeContactFromList(response.data._id);
+                })
+                .catch(console.error.bind(console, 'Error due deleting contact: '));
+        };
+
+        $ctrl.submitEdit = function(form) {
+            if(form.$valid) {
+                APIService.updateContact($ctrl.formUser)
+                    .then(function(response) {
+                        $ctrl.parent.replaceContactInList(response.data);
+                        $ctrl.discardEditing();
+                    })
+                    .catch(console.error.bind(console, 'Error due updating contact: '));
+            }
+        };
+
+        $ctrl.editContact = function(contact) {
+            $ctrl.editing = true;
+            $ctrl.formUser = angular.copy(contact);
+        };
+
+        $ctrl.discardEditing = function() {
+            $ctrl.editing = false;
+        }
+    }
+
 })(angular, window);

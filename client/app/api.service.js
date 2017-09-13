@@ -4,8 +4,8 @@
         .factory('APIService', function($http) {
             var API_ROOT = '/api';
 
-            function getContacts() {
-                return $http.get(API_ROOT + '/contacts');
+            function getContacts(params) {
+                return $http.get(API_ROOT + '/contacts', {params: params});
             }
 
             function getContact(id) {
@@ -17,11 +17,11 @@
             }
 
             function updateContact(contact) {
-                return $http.put(API_ROOT + '/contacts', contact);
+                return $http.put(API_ROOT + '/contacts/' + contact._id, contact);
             }
 
             function deleteContact(id) {
-                return $http.delete(API_ROOT + '/contact');
+                return $http.delete(API_ROOT + '/contacts/' + id);
             }
 
             return {
@@ -32,4 +32,5 @@
                 deleteContact: deleteContact
             }
         });
+
 })(angular, window);

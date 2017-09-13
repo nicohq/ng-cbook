@@ -2,25 +2,30 @@
     angular
         .module('cbook.contacts', [])
         .component('contacts', {
-            templateUrl: 'contacts.html',
+            templateUrl: 'app/components/contacts/contacts.html',
+            bindings: {
+                list: '<'
+            },
             controller: ContactsCtrl
-        })
-        .config(function($routeProvider) {
-            $routeProvider.when('/contacts', {
-                // template: '<contacts></contacts>',
-                template: 'div',
-                resolve: {
-                    list: function(APIService) {
-                        return APIService.getContacts()
-                    }
-                }
-            })
         });
 
-    // ContactsCtrl.$inject = ['APIService'];
-
     function ContactsCtrl() {
-        console.log(this);
+        var $ctrl = this;
+
+        $ctrl.replaceContactInList = function(contact) {
+            $ctrl.list.data.forEach(function(origin, idx, array) {
+                if(contact._id === origin._id) {
+                    array[idx] = contact;
+                }
+            });
+        };
+
+        $ctrl.removeContactFromList = function(id) {
+            $ctrl.list.data = $ctrl.list.data.filter(function(contact) {
+                return contact._id !== id;
+            });
+        };
+
     }
 
 })(angular, window);
