@@ -26,8 +26,8 @@ function create(req, res, next) {
 }
 
 function list(req, res, next) {
-    const { limit, skip = 0 } = req.query;
-    Contact.list({ limit, skip })
+    const { limit, skip = 0, name } = req.query;
+    Contact.list({ limit, skip, name })
         .then(contacts => res.json(contacts))
         .catch(e => next(e));
 }

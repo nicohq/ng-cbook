@@ -19,9 +19,10 @@ const ContactSchema = new mongoose.Schema({
 
 ContactSchema.statics = {
 
-    list({ skip = 0, limit } = {}) {
+    list({ skip = 0, limit, name } = {}) {
         return this.find()
             .sort({ createdAt: -1 })
+            .where('name', new RegExp(name, 'i'))
             .skip(+skip)
             .limit(+limit)
             .exec();
